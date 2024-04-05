@@ -176,4 +176,14 @@ abstract class _AuthenticationStore with Store {
     isLoading = false;
     return null;
   }
+
+  @action
+  Future<void> logOut() async {
+    isLoading = true;
+    isSMSSent = false;
+    isAuthenticated = false;
+    isNewAccount = false;
+    error = null;
+    isLoading = false;
+  }
 }

@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pawplaces/common/data/models/user_session.dart';
+import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
 import 'package:pawplaces/common/domain/services/session_service.dart';
+import 'package:pawplaces/features/login/presentation/stores/authentication_store.dart';
 
 part 'session_store.g.dart';
 
@@ -36,6 +38,7 @@ abstract class _SessionStore with Store {
     isLoading = true;
     FirebaseAuth.instance.signOut();
     SessionService.deleteSession();
+    dpLocator<AuthenticationStore>().logOut();
     session = null;
     isLoading = false;
   }

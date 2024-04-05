@@ -170,6 +170,14 @@ mixin _$AuthenticationStore on _AuthenticationStore, Store {
     return _$loginWithNumberAsyncAction.run(() => super.loginWithNumber(code));
   }
 
+  late final _$logOutAsyncAction =
+      AsyncAction('_AuthenticationStore.logOut', context: context);
+
+  @override
+  Future<void> logOut() {
+    return _$logOutAsyncAction.run(() => super.logOut());
+  }
+
   @override
   String toString() {
     return '''
