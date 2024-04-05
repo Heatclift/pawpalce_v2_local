@@ -81,6 +81,7 @@ dependencies:
   circle_flags: ^5.0.0
   flutter_gradient_animation_text: ^1.0.2
   shimmer: ^3.0.0
+  firebase_app_installations: ^0.2.5
 
 dev_dependencies:
   flutter_test:
