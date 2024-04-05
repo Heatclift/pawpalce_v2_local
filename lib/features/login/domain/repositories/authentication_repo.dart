@@ -1,15 +1,14 @@
 import 'package:pawplaces/common/data/models/user_session.dart';
 import 'package:pawplaces/common/data/sources/pawplace_api.dart';
-import 'package:platform_device_id_v3/platform_device_id.dart';
 
 class AuthenticationRepository {
   final api = PawPlaceApi.create();
 
 ///// returns session info token
   Future<String?> verifyNumber(int phoneNumer) async {
-    String? deviceId = await PlatformDeviceId.getDeviceId;
+    // String? deviceId = await PlatformDeviceId.getDeviceId;
 
-    var res = await api.verifynumber(phoneNumer, deviceId ?? '');
+    var res = await api.verifynumber(phoneNumer, 'deviceId');
     if (res.isSuccessful) {
       var data = res.body["data"];
       if (data != null) {

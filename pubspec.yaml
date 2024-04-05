@@ -59,7 +59,6 @@ dependencies:
   app_links: ^4.0.1
   flutter_launcher_icons: ^0.13.1
   rive: ^0.12.4
-  platform_device_id_v3: ^1.0.0
   dotted_border: ^2.1.0
   fluttertoast: ^8.2.4
   hive: ^2.2.3
