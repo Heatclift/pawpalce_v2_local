@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "649444871755",
+    "project_id": "pawplaces-417719",
+    "storage_bucket": "pawplaces-417719.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649444871755:android:85372405ea94979d4c87ce",
+        "android_client_info": {
+          "package_name": "com.upup.pawplaces"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBZlJ-zxce1d99hK0OHTXJLxmmVBJx-p64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
