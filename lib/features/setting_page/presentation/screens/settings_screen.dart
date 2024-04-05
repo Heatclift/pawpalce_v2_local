@@ -131,6 +131,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SettingsListItem(
               label: "About Us",
             ),
+            const Gap(15),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
