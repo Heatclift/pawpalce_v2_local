@@ -12,7 +12,13 @@
 		<string>com.upup.pawplaces</string>
 	</array>
 	<key>CFBundleDisplayName</key>
-	<string>Pawplaces</string>
+	<string>PawPlaces</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>PawPlaces will access your photos to let you upload cute pictures of your pets.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>PawPlaces will access your location to find PawPlaces near you.</string>
+	<key>NSLocationWhenInUseUsageDescription </key>
+	<string>PawPlaces will access your location in the background to find PawPlaces nearby.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
