@@ -22,17 +22,22 @@ class PawPlaceCard extends StatelessWidget {
     required this.place,
     required this.currentLoc,
     required this.placeLoc,
+    this.isDialog = false,
   });
 
   final PlaceModel place;
   final LatLng? currentLoc;
   final ({double lat, double long}) placeLoc;
 
+  final bool isDialog;
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.of(context).pop();
+        if (isDialog) {
+          Navigator.of(context).pop();
+        }
         DashboardModalTriggers.showpPlaceDetails(context);
       },
       child: Container(
@@ -99,7 +104,9 @@ class PawPlaceCard extends StatelessWidget {
                   const Spacer(),
                   TextButton(
                     onPressed: () async {
-                      Navigator.of(context).pop();
+                      if (isDialog) {
+                        Navigator.of(context).pop();
+                      }
                       // router.goNamed(Login.routeName);
                       //
 

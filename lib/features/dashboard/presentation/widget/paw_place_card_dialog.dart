@@ -26,6 +26,7 @@ class PawPlaceCardDialog extends StatelessWidget {
               place: place,
               currentLoc: currentLoc,
               placeLoc: placeLoc,
+              isDialog: true,
             ),
           ),
         )
