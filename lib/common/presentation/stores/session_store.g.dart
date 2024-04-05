@@ -65,6 +65,22 @@ mixin _$SessionStore on _SessionStore, Store {
     });
   }
 
+  late final _$hasProfileAtom =
+      Atom(name: '_SessionStore.hasProfile', context: context);
+
+  @override
+  bool get hasProfile {
+    _$hasProfileAtom.reportRead();
+    return super.hasProfile;
+  }
+
+  @override
+  set hasProfile(bool value) {
+    _$hasProfileAtom.reportWrite(value, super.hasProfile, () {
+      super.hasProfile = value;
+    });
+  }
+
   late final _$initSessionAsyncAction =
       AsyncAction('_SessionStore.initSession', context: context);
 
@@ -87,6 +103,7 @@ mixin _$SessionStore on _SessionStore, Store {
 isLoading: ${isLoading},
 future: ${future},
 session: ${session},
+hasProfile: ${hasProfile},
 hasSession: ${hasSession}
     ''';
   }

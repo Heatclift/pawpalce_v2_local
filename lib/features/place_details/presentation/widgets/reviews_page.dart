@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
+import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
+import 'package:pawplaces/common/presentation/stores/session_store.dart';
+import 'package:pawplaces/features/login/presentation/screens/login_with_phone_screen.dart';
 import 'package:pawplaces/features/place_details/presentation/screens/review_screen.dart';
 import 'package:pawplaces/features/place_details/presentation/widgets/comment_card.dart';
 import 'package:pawplaces/features/place_details/presentation/widgets/facilities_chip.dart';
+import 'package:pawplaces/features/register/presentation/screens/register_screen.dart';
 import 'package:pawplaces/main.dart';
 
 class ReviewsPage extends StatelessWidget {
@@ -176,8 +181,18 @@ class ReviewsPage extends StatelessWidget {
               width: double.maxFinite,
               child: TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
-                  router.goNamed(ReviewScreen.routeName);
+                  final hasSession = dpLocator<SessionStore>().hasSession;
+                  final hasProfile = dpLocator<SessionStore>().hasProfile;
+                  if (hasSession) {
+                    if (hasProfile) {
+                      Navigator.of(context).pop();
+                      router.goNamed(ReviewScreen.routeName);
+                    } else {
+                      context.goNamed(Register.routeName);
+                    }
+                  } else {
+                    context.goNamed(LoginWithPhone.routeName);
+                  }
                 },
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.black,

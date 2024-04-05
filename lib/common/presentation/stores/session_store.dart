@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:mobx/mobx.dart';
 import 'package:pawplaces/common/data/models/user_session.dart';
 import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
+import 'package:pawplaces/common/domain/repository/session_repository.dart';
 import 'package:pawplaces/common/domain/services/session_service.dart';
 import 'package:pawplaces/features/login/presentation/stores/authentication_store.dart';
 
@@ -12,6 +13,8 @@ class SessionStore extends _SessionStore with _$SessionStore {
 }
 
 abstract class _SessionStore with Store {
+  final sessionRepo = SessionRepository();
+
   @observable
   bool isLoading = false;
 
@@ -21,6 +24,9 @@ abstract class _SessionStore with Store {
   @observable
   UserSession? session;
 
+  @observable
+  bool hasProfile = false;
+
   @computed
   bool get hasSession => session != null;
 
@@ -29,6 +35,11 @@ abstract class _SessionStore with Store {
     isLoading = true;
     future = ObservableFuture<UserSession?>(SessionService.getSession());
     session = await future;
+    if (hasSession) {
+      final phoneCheckResult =
+          await sessionRepo.checkNumber(int.parse(session!.phoneNumber));
+      hasProfile = phoneCheckResult?.isProfileUpdated ?? false;
+    }
     // print("token: ${session?.localId}");
     isLoading = false;
   }

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
 import 'package:pawplaces/common/domain/helpers/maps_helper.dart';
+import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
+import 'package:pawplaces/common/presentation/stores/session_store.dart';
 import 'package:pawplaces/features/dashboard/data/models/place_model.dart';
 import 'package:pawplaces/features/dashboard/presentation/dashboard_modal_triggers.dart';
 import 'package:pawplaces/features/dashboard/presentation/widget/place_unlocked_dialog.dart';
+import 'package:pawplaces/features/login/presentation/screens/login_with_phone_screen.dart';
 import 'package:pawplaces/features/place_details/presentation/screens/review_screen.dart';
+import 'package:pawplaces/features/register/presentation/screens/register_screen.dart';
 import 'package:pawplaces/main.dart';
 // import 'package:pawplaces/features/login/presentation/login_screen.dart';
 
@@ -97,12 +102,23 @@ class PawPlaceCard extends StatelessWidget {
                       Navigator.of(context).pop();
                       // router.goNamed(Login.routeName);
                       //
-                      await showDialog(
-                          context: context,
-                          builder: (context) {
-                            return const PlaceUnlockedDialog();
-                          });
-                      router.goNamed(ReviewScreen.routeName);
+
+                      final hasSession = dpLocator<SessionStore>().hasSession;
+                      final hasProfile = dpLocator<SessionStore>().hasProfile;
+                      if (hasSession) {
+                        if (hasProfile) {
+                          await showDialog(
+                              context: context,
+                              builder: (context) {
+                                return const PlaceUnlockedDialog();
+                              });
+                          router.goNamed(ReviewScreen.routeName);
+                        } else {
+                          context.goNamed(Register.routeName);
+                        }
+                      } else {
+                        context.goNamed(LoginWithPhone.routeName);
+                      }
                     },
                     style: TextButton.styleFrom(
                       backgroundColor: ColorPalette.primaryColorDark,

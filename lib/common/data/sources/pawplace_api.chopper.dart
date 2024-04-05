@@ -51,6 +51,26 @@ final class _$PawPlaceApi extends PawPlaceApi {
   }
 
   @override
+  Future<Response<dynamic>> checknumber(
+    int phoneNumber,
+    String installationId,
+  ) {
+    final Uri $url =
+        Uri.parse('https://api.pawplaces.app/api/auth/checknumber');
+    final Map<String, dynamic> $params = <String, dynamic>{
+      'phoneNumber': phoneNumber,
+      'deviceId': installationId,
+    };
+    final Request $request = Request(
+      'GET',
+      $url,
+      client.baseUrl,
+      parameters: $params,
+    );
+    return client.send<dynamic, dynamic>($request);
+  }
+
+  @override
   Future<Response<dynamic>> loginWithNumber(Map<String, dynamic> body) {
     final Uri $url =
         Uri.parse('https://api.pawplaces.app/api/auth/loginnumber');
@@ -94,13 +114,13 @@ final class _$PawPlaceApi extends PawPlaceApi {
 
   @override
   Future<Response<dynamic>> verifynumber(
-    int phoneNumberm,
+    int phoneNumber,
     String deviceId,
   ) {
     final Uri $url =
         Uri.parse('https://api.pawplaces.app/api/auth/verifynumber');
     final Map<String, dynamic> $params = <String, dynamic>{
-      'phoneNumber': phoneNumberm,
+      'phoneNumber': phoneNumber,
       'deviceId': deviceId,
     };
     final Request $request = Request(

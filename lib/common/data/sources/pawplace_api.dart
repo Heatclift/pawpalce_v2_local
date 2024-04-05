@@ -26,6 +26,12 @@ abstract class PawPlaceApi extends ChopperService {
     @Query('userId') String userId,
   );
 
+  @Get(path: '/auth/checknumber')
+  Future<Response> checknumber(
+    @Query('phoneNumber') int phoneNumber,
+    @Query('deviceId') String installationId,
+  );
+
   @Post(path: '/auth/loginnumber')
   Future<Response> loginWithNumber(@Body() Map<String, dynamic> body);
 
@@ -36,6 +42,6 @@ abstract class PawPlaceApi extends ChopperService {
   Future<Response> createAccount(@Body() Map<String, dynamic> body);
 
   @Post(path: '/auth/verifynumber', optionalBody: true)
-  Future<Response> verifynumber(@Query('phoneNumber') int phoneNumberm,
+  Future<Response> verifynumber(@Query('phoneNumber') int phoneNumber,
       @Query('deviceId') String deviceId);
 }

@@ -16,6 +16,7 @@ import 'package:pawplaces/features/dashboard/presentation/widget/favorites_pullu
 import 'package:pawplaces/features/login/presentation/screens/login_with_phone_screen.dart';
 
 import 'package:pawplaces/features/profile/presentation/screens/profile_screen.dart';
+import 'package:pawplaces/features/register/presentation/screens/register_screen.dart';
 import 'package:pawplaces/features/search/presentation/screens/search_screen.dart';
 
 class Dashboard extends StatefulWidget {
@@ -176,9 +177,14 @@ class _DashboardState extends State<Dashboard> {
           } else {
             switch (index) {
               case 0:
-                var hasSession = dpLocator<SessionStore>().hasSession;
+                final hasSession = dpLocator<SessionStore>().hasSession;
+                final hasProfile = dpLocator<SessionStore>().hasProfile;
                 if (hasSession) {
-                  animateToPage(index);
+                  if (hasProfile) {
+                    animateToPage(index);
+                  } else {
+                    context.goNamed(Register.routeName);
+                  }
                 } else {
                   context.goNamed(LoginWithPhone.routeName);
                 }
