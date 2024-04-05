@@ -6,6 +6,11 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.transistorsoft.fetch</string>
+		<string>com.upup.pawplaces</string>
+	</array>
 	<key>CFBundleDisplayName</key>
 	<string>Pawplaces</string>
 	<key>CFBundleExecutable</key>
