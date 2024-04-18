@@ -2,6 +2,24 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>sms</string>
+		<string>tel</string>
+		<string>http</string>
+  		<string>https</string>
+	</array>	
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>app-1-649444871755-ios-b7c43715228453034c87ce</string>
+			</array>
+		</dict>
+	</array>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
@@ -17,7 +35,7 @@
 	<string>PawPlaces will access your photos to let you upload cute pictures of your pets.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>PawPlaces will access your location to find PawPlaces near you.</string>
-	<key>NSLocationWhenInUseUsageDescription </key>
+	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>PawPlaces will access your location in the background to find PawPlaces nearby.</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>

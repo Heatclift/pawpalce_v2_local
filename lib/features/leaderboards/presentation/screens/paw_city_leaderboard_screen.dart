@@ -1,15 +1,23 @@
 import 'package:circle_flags/circle_flags.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intro/intro.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
 import 'package:pawplaces/common/domain/helpers/math_helper.dart';
+import 'package:pawplaces/common/domain/services/session_service.dart';
+import 'package:pawplaces/features/dashboard/presentation/widget/achievement_unlocked_dialog.dart';
 import 'package:pawplaces/features/leaderboards/presentation/widgets/country_list_item.dart';
 import 'package:pawplaces/features/leaderboards/presentation/widgets/ranked_profile_list_item.dart';
 
 class PawCityLeaderBoards extends StatefulWidget {
   static String routeName = "PawCityLeaderBoards";
   static String route = "PawCityLeaderBoards";
-  const PawCityLeaderBoards({super.key});
+  final IntroController? introController;
+  final bool isPageMode;
+  final void Function()? onBack;
+
+  const PawCityLeaderBoards(
+      {super.key, this.isPageMode = false, this.onBack, this.introController});
 
   @override
   State<PawCityLeaderBoards> createState() => _PawCityLeaderBoardsState();
@@ -34,7 +42,11 @@ class _PawCityLeaderBoardsState extends State<PawCityLeaderBoards> {
                 const Gap(15),
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    if (widget.isPageMode) {
+                      widget.onBack?.call();
+                    } else {
+                      Navigator.of(context).pop();
+                    }
                   },
                   icon: const Icon(
                     Icons.chevron_left,
@@ -52,67 +64,50 @@ class _PawCityLeaderBoardsState extends State<PawCityLeaderBoards> {
             ),
             SizedBox(
               height: 75,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: const [
-                  CountryListItem(
-                    country: "ph",
-                    isSelected: true,
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "us",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "nz",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "gb",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "au",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "jp",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "sg",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "in",
-                  ),
-                  Gap(15),
-                ],
-              ),
+              child: widget.introController != null
+                  ? IntroStepTarget(
+                      step: 11,
+                      controller: widget.introController!,
+                      cardDecoration: const IntroCardDecoration(
+                          showPreviousButton: false,
+                          showNextButton: true,
+                          align: IntroCardAlign.outsideBottomLeft,
+                          padding: EdgeInsets.only(
+                            left: 20,
+                          )),
+                      cardContents: const TextSpan(
+                        text: "Select rankings by country",
+                      ),
+                      child: _buildCountrySelector(),
+                    )
+                  : _buildCountrySelector(),
             ),
             SizedBox(
               height: 50,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: const [
-                  CityChip(
-                    city: "Davao City",
-                    isSelected: true,
-                  ),
-                  Gap(10),
-                  CityChip(city: "Cebu City"),
-                  Gap(10),
-                  CityChip(city: "Quezon City"),
-                  Gap(10),
-                  CityChip(city: "Pasig"),
-                  Gap(10),
-                  CityChip(city: "Manila"),
-                  Gap(10),
-                ],
-              ),
+              child: widget.introController != null
+                  ? IntroStepTarget(
+                      step: 12,
+                      controller: widget.introController!,
+                      cardDecoration: const IntroCardDecoration(
+                          showPreviousButton: false,
+                          showNextButton: true,
+                          align: IntroCardAlign.outsideBottomLeft,
+                          padding: EdgeInsets.only(
+                            left: 20,
+                          )),
+                      onStepWillDeactivate: (willToStep) {
+                        SessionService.markAsOnboarded();
+                        showDialog(
+                            context: context,
+                            builder: (context) =>
+                                const AchievementUnlockedDialog());
+                      },
+                      cardContents: const TextSpan(
+                        text: "Select rankings by city",
+                      ),
+                      child: _buildCitySelector(),
+                    )
+                  : _buildCitySelector(),
             ),
             const Gap(5),
             RankedProfileListItem(
@@ -167,6 +162,70 @@ class _PawCityLeaderBoardsState extends State<PawCityLeaderBoards> {
           ],
         ),
       ),
+    );
+  }
+
+  ListView _buildCitySelector() {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      children: const [
+        CityChip(
+          city: "Davao City",
+          isSelected: true,
+        ),
+        Gap(10),
+        CityChip(city: "Cebu City"),
+        Gap(10),
+        CityChip(city: "Quezon City"),
+        Gap(10),
+        CityChip(city: "Pasig"),
+        Gap(10),
+        CityChip(city: "Manila"),
+        Gap(10),
+      ],
+    );
+  }
+
+  ListView _buildCountrySelector() {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      children: const [
+        CountryListItem(
+          country: "ph",
+          isSelected: true,
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "us",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "nz",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "gb",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "au",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "jp",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "sg",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "in",
+        ),
+        Gap(15),
+      ],
     );
   }
 }

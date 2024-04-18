@@ -1,21 +1,29 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
+import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
+import 'package:pawplaces/features/dashboard/presentation/stores/dashboard_store.dart';
 
-class MapFilterDialog extends StatelessWidget {
-  MapFilterDialog({super.key});
+class MapFilterDialog extends StatefulWidget {
+  const MapFilterDialog({super.key});
 
+  @override
+  State<MapFilterDialog> createState() => _MapFilterDialogState();
+}
+
+class _MapFilterDialogState extends State<MapFilterDialog> {
+  final store = dpLocator<DashboardStore>();
   final filters = [
-    "New Discoveries",
     "Apartment",
     "Grooming",
     "Pet Hotel",
-    "Hotels",
+    "Hotel",
     "Pet Hospital",
-    "Malls",
-    "Parks",
+    "Mall",
+    "Park",
     "Pet Shop",
     "Restaurant",
     "Cafe",
@@ -40,17 +48,39 @@ class MapFilterDialog extends StatelessWidget {
               const Gap(10),
               ...List.generate(
                 filters.length,
-                (index) => ListTile(
-                  titleAlignment: ListTileTitleAlignment.center,
-                  title: Text(
-                    filters[index],
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 18,
+                (index) => Observer(builder: (context) {
+                  final value =
+                      filters[index].replaceAll(" ", "").toLowerCase();
+                  final isActive = store.filters.contains(value);
+                  return ListTile(
+                    titleAlignment: ListTileTitleAlignment.center,
+                    onTap: () {
+                      store.setFilter(value);
+                    },
+                    title: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (isActive) ...[
+                          Icon(
+                            Icons.check,
+                            color: ColorPalette.primaryColor,
+                          ),
+                          const Gap(
+                            10,
+                          )
+                        ],
+                        Text(
+                          filters[index],
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ),
+                  );
+                }),
               ),
               const Divider(),
               ListTile(
@@ -59,7 +89,7 @@ class MapFilterDialog extends StatelessWidget {
                   Navigator.of(context).pop();
                 },
                 title: Text(
-                  "Cancel",
+                  "Done",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontWeight: FontWeight.w500,

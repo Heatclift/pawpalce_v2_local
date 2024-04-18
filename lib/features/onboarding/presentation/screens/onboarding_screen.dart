@@ -5,7 +5,6 @@ import 'package:pawplaces/common/presentation/widgets/secondary_button.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pawplaces/features/dashboard/presentation/screens/dashboard_screen.dart';
-import 'package:pawplaces/features/login/presentation/screens/login_with_phone_screen.dart';
 import 'package:pawplaces/features/onboarding/presentation/screens/pages/onboarding_page1.dart';
 import 'package:pawplaces/features/onboarding/presentation/screens/pages/onboarding_page2.dart';
 import 'package:pawplaces/features/onboarding/presentation/screens/pages/onboarding_page3.dart';
@@ -188,7 +187,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       minimumSize: const Size(300, 60),
                     ),
                     onPressed: () {
-                      context.goNamed(LoginWithPhone.routeName);
+                      context.goNamed(Dashboard.routeName);
                     },
                     child: const Text(
                       "GET STARTED",

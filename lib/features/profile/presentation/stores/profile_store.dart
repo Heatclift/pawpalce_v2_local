@@ -23,6 +23,9 @@ abstract class _ProfileStore with Store {
   @computed
   bool get hasUser => user != null;
 
+  @computed
+  bool get hasPet => user?.petProfiles?.isNotEmpty ?? false;
+
   @action
   Future<UserModel?> getProfileDetails() async {
     isLoading = true;

@@ -25,6 +25,38 @@ mixin _$EditProfileStore on _EditProfileStore, Store {
     });
   }
 
+  late final _$isUpdateSuccessAtom =
+      Atom(name: '_EditProfileStore.isUpdateSuccess', context: context);
+
+  @override
+  bool get isUpdateSuccess {
+    _$isUpdateSuccessAtom.reportRead();
+    return super.isUpdateSuccess;
+  }
+
+  @override
+  set isUpdateSuccess(bool value) {
+    _$isUpdateSuccessAtom.reportWrite(value, super.isUpdateSuccess, () {
+      super.isUpdateSuccess = value;
+    });
+  }
+
+  late final _$errorAtom =
+      Atom(name: '_EditProfileStore.error', context: context);
+
+  @override
+  String? get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(String? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
   late final _$futureAtom =
       Atom(name: '_EditProfileStore.future', context: context);
 
@@ -65,10 +97,28 @@ mixin _$EditProfileStore on _EditProfileStore, Store {
     return _$setPictureAsyncAction.run(() => super.setPicture(picture));
   }
 
+  late final _$updateProfileAsyncAction =
+      AsyncAction('_EditProfileStore.updateProfile', context: context);
+
+  @override
+  Future<void> updateProfile(
+      {String? email,
+      String? firstName,
+      String? lastName,
+      String? dateOfBirth}) {
+    return _$updateProfileAsyncAction.run(() => super.updateProfile(
+        email: email,
+        firstName: firstName,
+        lastName: lastName,
+        dateOfBirth: dateOfBirth));
+  }
+
   @override
   String toString() {
     return '''
 isLoading: ${isLoading},
+isUpdateSuccess: ${isUpdateSuccess},
+error: ${error},
 future: ${future},
 profilePic: ${profilePic}
     ''';

@@ -12,7 +12,7 @@
         android:icon="@mipmap/ic_launcher">
 
          <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="AIzaSyCL4A52wtoZcUqAWpg48Itmj4k7t_CbV6g"/>
+               android:value="AIzaSyABNosZ_IJuJ7D4Cg1KP0utmoMXovObukI"/>
 
 
         <activity
@@ -48,6 +48,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http" android:host="pawplaces.app" />
+                <data android:scheme="https" />
+            </intent-filter>
+
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="www.pawplaces.app" />
                 <data android:scheme="https" />
             </intent-filter>
 

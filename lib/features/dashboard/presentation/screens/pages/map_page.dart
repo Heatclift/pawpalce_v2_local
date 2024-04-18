@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,9 +9,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
 import 'package:pawplaces/common/domain/constants/style_strings.dart';
+import 'package:pawplaces/common/domain/helpers/maps_helper.dart';
 import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
 import 'package:pawplaces/common/domain/services/location_service.dart';
 import 'package:pawplaces/features/dashboard/presentation/stores/dashboard_store.dart';
+import 'package:pawplaces/features/dashboard/presentation/stores/favorites_store.dart';
 import 'package:pawplaces/features/dashboard/presentation/widget/map_filter_dialog.dart';
 import 'package:pawplaces/features/dashboard/presentation/widget/nearby_paw_place_list_pullup.dart';
 import 'package:pawplaces/features/dashboard/presentation/widget/paw_place_card_dialog.dart';
@@ -28,22 +31,37 @@ class MapPage extends StatefulWidget {
   State<MapPage> createState() => _MapPageState();
 }
 
-class _MapPageState extends State<MapPage> {
+class _MapPageState extends State<MapPage> with SingleTickerProviderStateMixin {
   final store = dpLocator<DashboardStore>();
+  final favesStore = dpLocator<FavoritesStore>();
 
   StreamSubscription<Position>? locationSub;
 
   GoogleMapController? _controller;
 
-  static const CameraPosition _initial = CameraPosition(
-    target: LatLng(14.5995, 120.9842),
-    zoom: 10,
-  );
+  CameraPosition get _initial {
+    if (store.currentLocation.longitude != 0 &&
+        store.currentLocation.longitude != 0) {
+      final position = store.currentLocation;
+      return CameraPosition(
+        target: LatLng(position.latitude, position.longitude),
+        zoom: 10,
+      );
+    }
+
+    return const CameraPosition(
+      target: LatLng(14.5995, 120.9842),
+      zoom: 10,
+    );
+  }
 
   void pinCurrentLoc(Set<Marker> markers, Position position) {
     var currLocMarker = Marker(
       markerId: const MarkerId("mylocation"),
       position: LatLng(position.latitude, position.longitude),
+      infoWindow: const InfoWindow(
+        title: "You",
+      ),
       icon: store.currLocIcon ?? BitmapDescriptor.defaultMarker,
     );
     if (markers.isNotEmpty) {
@@ -54,6 +72,7 @@ class _MapPageState extends State<MapPage> {
 
   Future<void> init() async {
     await store.loadMarkers();
+    // await favesStore.loadFaves();
     var locationStream = await dpLocator<LocationService>().getLocationStream();
     locationSub = locationStream.listen((loc) {
       store.setCurrentLocation(loc);
@@ -108,14 +127,16 @@ class _MapPageState extends State<MapPage> {
                                   context: context,
                                   barrierColor: Colors.transparent,
                                   builder: (context) {
-                                    return PawPlaceCardDialog(
-                                      place: store.places.firstWhere(
-                                          (element) => element.placeId == id),
-                                      currentLoc: LatLng(
-                                        position.latitude,
-                                        position.longitude,
-                                      ),
-                                    );
+                                    return Observer(builder: (context) {
+                                      return PawPlaceCardDialog(
+                                        place: store.places.firstWhere(
+                                            (element) => element.placeId == id),
+                                        currentLoc: LatLng(
+                                          position.latitude,
+                                          position.longitude,
+                                        ),
+                                      );
+                                    });
                                   },
                                 );
                               }
@@ -126,6 +147,34 @@ class _MapPageState extends State<MapPage> {
               style: StyleStrings.mapStyle,
               initialCameraPosition: _initial,
               myLocationEnabled: false,
+              onCameraMove: (position) {
+                final latlng = position.target;
+                final lastMapPosition = store.lastScreenPosition;
+                final distance = MapsHelper.calculateDistance(
+                    LatLng(lastMapPosition.latitude, lastMapPosition.longitude),
+                    latlng);
+
+                final distanceInterval =
+                    FirebaseRemoteConfig.instance.getDouble("distanceInterval");
+
+                if (distance >= distanceInterval) {
+                  store.loadMarkers(
+                    zoom: position.zoom,
+                    position: Position(
+                      longitude: latlng.longitude,
+                      latitude: latlng.latitude,
+                      timestamp: DateTime.now(),
+                      accuracy: 10,
+                      altitude: position.zoom,
+                      altitudeAccuracy: 10,
+                      heading: position.bearing,
+                      headingAccuracy: 5,
+                      speed: 0,
+                      speedAccuracy: 3,
+                    ),
+                  );
+                }
+              },
               onMapCreated: (GoogleMapController controller) {
                 _controller = controller;
 
@@ -257,7 +306,7 @@ class _MapPageState extends State<MapPage> {
                   onPressed: () {
                     showDialog(
                         context: context,
-                        builder: (context) => MapFilterDialog());
+                        builder: (context) => const MapFilterDialog());
                   },
                   icon: SvgPicture.asset(
                     "assets/icons/filter_icon.svg",

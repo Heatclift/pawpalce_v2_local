@@ -20,14 +20,18 @@ PlaceModel _$PlaceModelFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$PlaceModel {
+  @JsonKey(name: "locationId")
   String get placeId => throw _privateConstructorUsedError;
   @JsonKey(name: "locationName")
   String get placeName => throw _privateConstructorUsedError;
   @JsonKey(name: "googlePhotoUrl")
   String get thumbnail => throw _privateConstructorUsedError;
+  bool get isPetfriendly => throw _privateConstructorUsedError;
+  bool get isFavorite => throw _privateConstructorUsedError;
+  bool get isUnlocked => throw _privateConstructorUsedError;
   String? get placeDescription => throw _privateConstructorUsedError;
   String get category => throw _privateConstructorUsedError;
-  @JsonKey(name: "googleRating")
+  @JsonKey(name: "userRatings")
   double get placeRating => throw _privateConstructorUsedError;
   @JsonKey(name: "googleRatingCount")
   int get placeRatingCount => throw _privateConstructorUsedError;
@@ -47,12 +51,15 @@ abstract class $PlaceModelCopyWith<$Res> {
       _$PlaceModelCopyWithImpl<$Res, PlaceModel>;
   @useResult
   $Res call(
-      {String placeId,
+      {@JsonKey(name: "locationId") String placeId,
       @JsonKey(name: "locationName") String placeName,
       @JsonKey(name: "googlePhotoUrl") String thumbnail,
+      bool isPetfriendly,
+      bool isFavorite,
+      bool isUnlocked,
       String? placeDescription,
       String category,
-      @JsonKey(name: "googleRating") double placeRating,
+      @JsonKey(name: "userRatings") double placeRating,
       @JsonKey(name: "googleRatingCount") int placeRatingCount,
       double latitude,
       double longitude});
@@ -74,6 +81,9 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
     Object? placeId = null,
     Object? placeName = null,
     Object? thumbnail = null,
+    Object? isPetfriendly = null,
+    Object? isFavorite = null,
+    Object? isUnlocked = null,
     Object? placeDescription = freezed,
     Object? category = null,
     Object? placeRating = null,
@@ -94,6 +104,18 @@ class _$PlaceModelCopyWithImpl<$Res, $Val extends PlaceModel>
           ? _value.thumbnail
           : thumbnail // ignore: cast_nullable_to_non_nullable
               as String,
+      isPetfriendly: null == isPetfriendly
+          ? _value.isPetfriendly
+          : isPetfriendly // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isFavorite: null == isFavorite
+          ? _value.isFavorite
+          : isFavorite // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isUnlocked: null == isUnlocked
+          ? _value.isUnlocked
+          : isUnlocked // ignore: cast_nullable_to_non_nullable
+              as bool,
       placeDescription: freezed == placeDescription
           ? _value.placeDescription
           : placeDescription // ignore: cast_nullable_to_non_nullable
@@ -131,12 +153,15 @@ abstract class _$$PlaceModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String placeId,
+      {@JsonKey(name: "locationId") String placeId,
       @JsonKey(name: "locationName") String placeName,
       @JsonKey(name: "googlePhotoUrl") String thumbnail,
+      bool isPetfriendly,
+      bool isFavorite,
+      bool isUnlocked,
       String? placeDescription,
       String category,
-      @JsonKey(name: "googleRating") double placeRating,
+      @JsonKey(name: "userRatings") double placeRating,
       @JsonKey(name: "googleRatingCount") int placeRatingCount,
       double latitude,
       double longitude});
@@ -156,6 +181,9 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
     Object? placeId = null,
     Object? placeName = null,
     Object? thumbnail = null,
+    Object? isPetfriendly = null,
+    Object? isFavorite = null,
+    Object? isUnlocked = null,
     Object? placeDescription = freezed,
     Object? category = null,
     Object? placeRating = null,
@@ -176,6 +204,18 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
           ? _value.thumbnail
           : thumbnail // ignore: cast_nullable_to_non_nullable
               as String,
+      isPetfriendly: null == isPetfriendly
+          ? _value.isPetfriendly
+          : isPetfriendly // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isFavorite: null == isFavorite
+          ? _value.isFavorite
+          : isFavorite // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isUnlocked: null == isUnlocked
+          ? _value.isUnlocked
+          : isUnlocked // ignore: cast_nullable_to_non_nullable
+              as bool,
       placeDescription: freezed == placeDescription
           ? _value.placeDescription
           : placeDescription // ignore: cast_nullable_to_non_nullable
@@ -208,13 +248,16 @@ class __$$PlaceModelImplCopyWithImpl<$Res>
 @JsonSerializable()
 class _$PlaceModelImpl implements _PlaceModel {
   const _$PlaceModelImpl(
-      {required this.placeId,
+      {@JsonKey(name: "locationId") required this.placeId,
       @JsonKey(name: "locationName") required this.placeName,
       @JsonKey(name: "googlePhotoUrl")
-      this.thumbnail = "https://loremflickr.com/128/101",
+      this.thumbnail = "https://placehold.co/600x400?text=No+Image",
+      this.isPetfriendly = false,
+      this.isFavorite = false,
+      this.isUnlocked = false,
       this.placeDescription,
       this.category = "pethotel",
-      @JsonKey(name: "googleRating") this.placeRating = 0.0,
+      @JsonKey(name: "userRatings") this.placeRating = 0.0,
       @JsonKey(name: "googleRatingCount") this.placeRatingCount = 0,
       required this.latitude,
       required this.longitude});
@@ -223,6 +266,7 @@ class _$PlaceModelImpl implements _PlaceModel {
       _$$PlaceModelImplFromJson(json);
 
   @override
+  @JsonKey(name: "locationId")
   final String placeId;
   @override
   @JsonKey(name: "locationName")
@@ -231,12 +275,21 @@ class _$PlaceModelImpl implements _PlaceModel {
   @JsonKey(name: "googlePhotoUrl")
   final String thumbnail;
   @override
+  @JsonKey()
+  final bool isPetfriendly;
+  @override
+  @JsonKey()
+  final bool isFavorite;
+  @override
+  @JsonKey()
+  final bool isUnlocked;
+  @override
   final String? placeDescription;
   @override
   @JsonKey()
   final String category;
   @override
-  @JsonKey(name: "googleRating")
+  @JsonKey(name: "userRatings")
   final double placeRating;
   @override
   @JsonKey(name: "googleRatingCount")
@@ -248,7 +301,7 @@ class _$PlaceModelImpl implements _PlaceModel {
 
   @override
   String toString() {
-    return 'PlaceModel(placeId: $placeId, placeName: $placeName, thumbnail: $thumbnail, placeDescription: $placeDescription, category: $category, placeRating: $placeRating, placeRatingCount: $placeRatingCount, latitude: $latitude, longitude: $longitude)';
+    return 'PlaceModel(placeId: $placeId, placeName: $placeName, thumbnail: $thumbnail, isPetfriendly: $isPetfriendly, isFavorite: $isFavorite, isUnlocked: $isUnlocked, placeDescription: $placeDescription, category: $category, placeRating: $placeRating, placeRatingCount: $placeRatingCount, latitude: $latitude, longitude: $longitude)';
   }
 
   @override
@@ -261,6 +314,12 @@ class _$PlaceModelImpl implements _PlaceModel {
                 other.placeName == placeName) &&
             (identical(other.thumbnail, thumbnail) ||
                 other.thumbnail == thumbnail) &&
+            (identical(other.isPetfriendly, isPetfriendly) ||
+                other.isPetfriendly == isPetfriendly) &&
+            (identical(other.isFavorite, isFavorite) ||
+                other.isFavorite == isFavorite) &&
+            (identical(other.isUnlocked, isUnlocked) ||
+                other.isUnlocked == isUnlocked) &&
             (identical(other.placeDescription, placeDescription) ||
                 other.placeDescription == placeDescription) &&
             (identical(other.category, category) ||
@@ -282,6 +341,9 @@ class _$PlaceModelImpl implements _PlaceModel {
       placeId,
       placeName,
       thumbnail,
+      isPetfriendly,
+      isFavorite,
+      isUnlocked,
       placeDescription,
       category,
       placeRating,
@@ -305,12 +367,15 @@ class _$PlaceModelImpl implements _PlaceModel {
 
 abstract class _PlaceModel implements PlaceModel {
   const factory _PlaceModel(
-      {required final String placeId,
+      {@JsonKey(name: "locationId") required final String placeId,
       @JsonKey(name: "locationName") required final String placeName,
       @JsonKey(name: "googlePhotoUrl") final String thumbnail,
+      final bool isPetfriendly,
+      final bool isFavorite,
+      final bool isUnlocked,
       final String? placeDescription,
       final String category,
-      @JsonKey(name: "googleRating") final double placeRating,
+      @JsonKey(name: "userRatings") final double placeRating,
       @JsonKey(name: "googleRatingCount") final int placeRatingCount,
       required final double latitude,
       required final double longitude}) = _$PlaceModelImpl;
@@ -319,6 +384,7 @@ abstract class _PlaceModel implements PlaceModel {
       _$PlaceModelImpl.fromJson;
 
   @override
+  @JsonKey(name: "locationId")
   String get placeId;
   @override
   @JsonKey(name: "locationName")
@@ -327,11 +393,17 @@ abstract class _PlaceModel implements PlaceModel {
   @JsonKey(name: "googlePhotoUrl")
   String get thumbnail;
   @override
+  bool get isPetfriendly;
+  @override
+  bool get isFavorite;
+  @override
+  bool get isUnlocked;
+  @override
   String? get placeDescription;
   @override
   String get category;
   @override
-  @JsonKey(name: "googleRating")
+  @JsonKey(name: "userRatings")
   double get placeRating;
   @override
   @JsonKey(name: "googleRatingCount")

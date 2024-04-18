@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:pawplaces/common/data/models/user_session.dart';
 import 'package:pawplaces/common/domain/use_cases/use_case.dart';
 
@@ -12,7 +13,8 @@ enum SMSAuthState {
 }
 
 class CodeSentResponse {
-  final FirebaseAuthException? error;
+  final dynamic error;
+  final String? errorMsg;
   final String? verificationId;
   final String? accessToken;
   final int? forceResendingToken;
@@ -20,6 +22,7 @@ class CodeSentResponse {
   final SMSAuthState state;
 
   CodeSentResponse({
+    this.errorMsg,
     this.error,
     this.accessToken,
     this.session,
@@ -61,7 +64,14 @@ class AuthWithPhoneUsecase extends UseCase<CodeSentResponse, int> {
           responseCompleter.complete(response);
         },
         verificationFailed: (FirebaseAuthException error) {
-          response = CodeSentResponse(state: SMSAuthState.failed);
+          response = CodeSentResponse(
+            state: SMSAuthState.failed,
+            error: error,
+            errorMsg: error.message,
+          );
+          FirebaseCrashlytics.instance
+              .log("AuthVerificationFailed: ${error.message}");
+          FirebaseCrashlytics.instance.recordError(error, error.stackTrace);
           responseCompleter.complete(response);
         },
         codeSent: (String verificationId, int? forceResendingToken) {
@@ -81,7 +91,12 @@ class AuthWithPhoneUsecase extends UseCase<CodeSentResponse, int> {
         },
       );
     } catch (e) {
-      response = CodeSentResponse(state: SMSAuthState.failed);
+      response = CodeSentResponse(state: SMSAuthState.failed, error: e);
+      FirebaseCrashlytics.instance.log(
+        "AuthVerificationFailed: ${e.toString()}",
+      );
+      FirebaseCrashlytics.instance
+          .recordError(e.toString(), StackTrace.current);
       responseCompleter.complete(response);
     }
     return await responseCompleter.future;

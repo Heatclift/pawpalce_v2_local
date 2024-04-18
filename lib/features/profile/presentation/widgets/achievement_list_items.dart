@@ -4,8 +4,14 @@ import 'package:gap/gap.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
 
 class AchievementListItem extends StatelessWidget {
+  final String icon;
+  final bool isSvg;
+  final String tittle;
   const AchievementListItem({
     super.key,
+    required this.icon,
+    this.isSvg = false,
+    required this.tittle,
   });
 
   @override
@@ -13,16 +19,16 @@ class AchievementListItem extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        SvgPicture.asset("assets/badges/pawmapper10plus.svg"),
+        isSvg ? SvgPicture.asset(icon) : Image.asset(icon),
         const Gap(15),
         Expanded(
             child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              "Paw Mapper Badge",
-              style: TextStyle(
+            Text(
+              tittle,
+              style: const TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
               ),
@@ -35,12 +41,12 @@ class AchievementListItem extends StatelessWidget {
                     color: ColorPalette.primaryColor,
                     minHeight: 10,
                     borderRadius: BorderRadius.circular(10),
-                    value: .5,
+                    value: 0,
                   ),
                 ),
                 const Gap(15),
                 Text(
-                  "1/10",
+                  "0/10",
                   style: TextStyle(
                     color: ColorPalette.accentText,
                     fontWeight: FontWeight.w500,

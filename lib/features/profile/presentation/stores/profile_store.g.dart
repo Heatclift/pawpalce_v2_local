@@ -15,6 +15,12 @@ mixin _$ProfileStore on _ProfileStore, Store {
   bool get hasUser => (_$hasUserComputed ??=
           Computed<bool>(() => super.hasUser, name: '_ProfileStore.hasUser'))
       .value;
+  Computed<bool>? _$hasPetComputed;
+
+  @override
+  bool get hasPet => (_$hasPetComputed ??=
+          Computed<bool>(() => super.hasPet, name: '_ProfileStore.hasPet'))
+      .value;
 
   late final _$isLoadingAtom =
       Atom(name: '_ProfileStore.isLoading', context: context);
@@ -77,7 +83,8 @@ mixin _$ProfileStore on _ProfileStore, Store {
 isLoading: ${isLoading},
 future: ${future},
 user: ${user},
-hasUser: ${hasUser}
+hasUser: ${hasUser},
+hasPet: ${hasPet}
     ''';
   }
 }

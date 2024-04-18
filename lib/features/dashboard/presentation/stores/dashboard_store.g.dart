@@ -9,6 +9,30 @@ part of 'dashboard_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$DashboardStore on _DashboardStore, Store {
+  Computed<List<PlaceModel>>? _$filteredPlacesComputed;
+
+  @override
+  List<PlaceModel> get filteredPlaces => (_$filteredPlacesComputed ??=
+          Computed<List<PlaceModel>>(() => super.filteredPlaces,
+              name: '_DashboardStore.filteredPlaces'))
+      .value;
+
+  late final _$errorAtom =
+      Atom(name: '_DashboardStore.error', context: context);
+
+  @override
+  String? get error {
+    _$errorAtom.reportRead();
+    return super.error;
+  }
+
+  @override
+  set error(String? value) {
+    _$errorAtom.reportWrite(value, super.error, () {
+      super.error = value;
+    });
+  }
+
   late final _$currentLocationAtom =
       Atom(name: '_DashboardStore.currentLocation', context: context);
 
@@ -38,6 +62,38 @@ mixin _$DashboardStore on _DashboardStore, Store {
   set isLoading(bool value) {
     _$isLoadingAtom.reportWrite(value, super.isLoading, () {
       super.isLoading = value;
+    });
+  }
+
+  late final _$filtersAtom =
+      Atom(name: '_DashboardStore.filters', context: context);
+
+  @override
+  ObservableList<String> get filters {
+    _$filtersAtom.reportRead();
+    return super.filters;
+  }
+
+  @override
+  set filters(ObservableList<String> value) {
+    _$filtersAtom.reportWrite(value, super.filters, () {
+      super.filters = value;
+    });
+  }
+
+  late final _$lastScreenPositionAtom =
+      Atom(name: '_DashboardStore.lastScreenPosition', context: context);
+
+  @override
+  Position get lastScreenPosition {
+    _$lastScreenPositionAtom.reportRead();
+    return super.lastScreenPosition;
+  }
+
+  @override
+  set lastScreenPosition(Position value) {
+    _$lastScreenPositionAtom.reportWrite(value, super.lastScreenPosition, () {
+      super.lastScreenPosition = value;
     });
   }
 
@@ -105,12 +161,21 @@ mixin _$DashboardStore on _DashboardStore, Store {
     });
   }
 
+  late final _$unlockPlaceAsyncAction =
+      AsyncAction('_DashboardStore.unlockPlace', context: context);
+
+  @override
+  Future<bool> unlockPlace(String placeId) {
+    return _$unlockPlaceAsyncAction.run(() => super.unlockPlace(placeId));
+  }
+
   late final _$loadMarkersAsyncAction =
       AsyncAction('_DashboardStore.loadMarkers', context: context);
 
   @override
-  Future<void> loadMarkers() {
-    return _$loadMarkersAsyncAction.run(() => super.loadMarkers());
+  Future<void> loadMarkers({Position? position, double zoom = 15}) {
+    return _$loadMarkersAsyncAction
+        .run(() => super.loadMarkers(position: position, zoom: zoom));
   }
 
   late final _$_DashboardStoreActionController =
@@ -128,14 +193,29 @@ mixin _$DashboardStore on _DashboardStore, Store {
   }
 
   @override
+  void setFilter(String filter) {
+    final _$actionInfo = _$_DashboardStoreActionController.startAction(
+        name: '_DashboardStore.setFilter');
+    try {
+      return super.setFilter(filter);
+    } finally {
+      _$_DashboardStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
+error: ${error},
 currentLocation: ${currentLocation},
 isLoading: ${isLoading},
+filters: ${filters},
+lastScreenPosition: ${lastScreenPosition},
 future: ${future},
 places: ${places},
 markers: ${markers},
-currLocIcon: ${currLocIcon}
+currLocIcon: ${currLocIcon},
+filteredPlaces: ${filteredPlaces}
     ''';
   }
 }

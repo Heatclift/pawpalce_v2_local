@@ -1,9 +1,12 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
+import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
+import 'package:pawplaces/common/presentation/stores/session_store.dart';
 import 'package:pawplaces/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:pawplaces/features/register/domain/repositories/register_repository.dart';
+import 'package:pawplaces/features/register/presentation/widgets/register_success_dialog.dart';
+import 'package:pawplaces/main.dart';
 
 part 'register_store.g.dart';
 
@@ -59,8 +62,14 @@ abstract class _RegistrationStore with Store {
       },
       fireImmediately: false,
     );
-    registerReactionDispose = when((p0) => isRegistered, () {
-      context.goNamed(Dashboard.routeName);
+    registerReactionDispose = when((p0) => isRegistered, () async {
+      var sesionStore = dpLocator<SessionStore>();
+      sesionStore.initSession();
+      await showDialog(
+        context: context,
+        builder: (context) => const RegistesSuccessDialog(),
+      );
+      router.goNamed(Dashboard.routeName);
     });
   }
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:intro/intro.dart';
 import 'package:pawplaces/common/domain/helpers/math_helper.dart';
 import 'package:pawplaces/features/leaderboards/presentation/widgets/country_list_item.dart';
 import 'package:pawplaces/features/leaderboards/presentation/widgets/ranked_profile_list_item.dart';
@@ -7,7 +8,11 @@ import 'package:pawplaces/features/leaderboards/presentation/widgets/ranked_prof
 class PawCountryLeaderBoards extends StatefulWidget {
   static String routeName = "PawCountryLeaderBoards";
   static String route = "PawCountryLeaderBoards";
-  const PawCountryLeaderBoards({super.key});
+  final bool isPageMode;
+  final void Function()? onBack;
+  final IntroController? introController;
+  const PawCountryLeaderBoards(
+      {super.key, this.isPageMode = false, this.onBack, this.introController});
 
   @override
   State<PawCountryLeaderBoards> createState() => _PawCountryLeaderBoardsState();
@@ -31,7 +36,11 @@ class _PawCountryLeaderBoardsState extends State<PawCountryLeaderBoards> {
                 const Gap(15),
                 IconButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    if (widget.isPageMode) {
+                      widget.onBack?.call();
+                    } else {
+                      Navigator.of(context).pop();
+                    }
                   },
                   icon: const Icon(
                     Icons.chevron_left,
@@ -49,45 +58,23 @@ class _PawCountryLeaderBoardsState extends State<PawCountryLeaderBoards> {
             ),
             SizedBox(
               height: 75,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                children: const [
-                  CountryListItem(
-                    country: "ph",
-                    isSelected: true,
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "us",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "nz",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "gb",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "au",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "jp",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "sg",
-                  ),
-                  Gap(15),
-                  CountryListItem(
-                    country: "in",
-                  ),
-                  Gap(15),
-                ],
-              ),
+              child: widget.introController != null
+                  ? IntroStepTarget(
+                      step: 9,
+                      controller: widget.introController!,
+                      cardDecoration: const IntroCardDecoration(
+                          showPreviousButton: false,
+                          showNextButton: true,
+                          align: IntroCardAlign.outsideBottomLeft,
+                          padding: EdgeInsets.only(
+                            left: 20,
+                          )),
+                      cardContents: const TextSpan(
+                        text: "Select rankings by country",
+                      ),
+                      child: _buildCountrySelector(),
+                    )
+                  : _buildCountrySelector(),
             ),
             const Gap(10),
             RankedProfileListItem(
@@ -142,6 +129,48 @@ class _PawCountryLeaderBoardsState extends State<PawCountryLeaderBoards> {
           ],
         ),
       ),
+    );
+  }
+
+  ListView _buildCountrySelector() {
+    return ListView(
+      scrollDirection: Axis.horizontal,
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      children: const [
+        CountryListItem(
+          country: "ph",
+          isSelected: true,
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "us",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "nz",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "gb",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "au",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "jp",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "sg",
+        ),
+        Gap(15),
+        CountryListItem(
+          country: "in",
+        ),
+        Gap(15),
+      ],
     );
   }
 }

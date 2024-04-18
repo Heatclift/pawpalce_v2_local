@@ -1,6 +1,7 @@
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -31,6 +32,21 @@ Future<void> main() async {
 
 Future<void> initFirebaseServices() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseRemoteConfig.instance.setDefaults({
+    "distanceInterval": 20.00,
+    "showAuthErrorDetails": true,
+    "enableTestCrash": false,
+  });
+
+  await FirebaseRemoteConfig.instance.setConfigSettings(
+    RemoteConfigSettings(
+      fetchTimeout: const Duration(minutes: 1),
+      minimumFetchInterval: const Duration(hours: 1),
+    ),
+  );
+
+  await FirebaseRemoteConfig.instance.fetchAndActivate();
+
   await FirebaseMessaging.instance.requestPermission(provisional: true);
   await FirebaseAppCheck.instance.activate(
     // You can also use a `ReCaptchaEnterpriseProvider` provider instance as an
@@ -49,9 +65,14 @@ Future<void> initFirebaseServices() async {
     // 2. Device Check provider
     // 3. App Attest provider
     // 4. App Attest provider with fallback to Device Check provider (App Attest provider is only available on iOS 14.0+, macOS 14.0+)
-    appleProvider:
-        kDebugMode ? AppleProvider.appAttest : AppleProvider.deviceCheck,
+    appleProvider: AppleProvider.appAttest,
   );
+
+  await FirebaseRemoteConfig.instance.setDefaults({
+    "distanceInterval": 20.00,
+    "showAuthErrorDetails": true,
+    "enableTestCrash": true,
+  });
 }
 
 class MyApp extends StatelessWidget {

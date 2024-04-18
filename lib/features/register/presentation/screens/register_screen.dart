@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -12,6 +13,7 @@ import 'package:pawplaces/common/presentation/widgets/text_form_field.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
 import 'package:pawplaces/common/presentation/widgets/orange_button.dart';
 import 'package:pawplaces/features/register/presentation/stores/register_store.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Register extends StatefulWidget {
   static const routeName = "Register";
@@ -387,9 +389,48 @@ class _RegisterState extends State<Register> {
                               },
                             );
                           }),
-                          const Text(
-                            'By creating your account, you agree to Koala’s \nPrivacy Policy and Terms of Use.',
-                            style: TextStyle(
+                          Text.rich(
+                            TextSpan(
+                                text:
+                                    "By creating your account, you agree to Koala’s \n",
+                                children: [
+                                  TextSpan(
+                                    text: "Privacy Policy",
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () async {
+                                        final Uri url = Uri.parse(
+                                            'https://www.pawplaces.app/privacypolicy');
+                                        if (!await launchUrl(url,
+                                            mode:
+                                                LaunchMode.inAppBrowserView)) {
+                                          throw Exception(
+                                              'Could not launch $url');
+                                        }
+                                      },
+                                    style: TextStyle(
+                                      color: ColorPalette.orange,
+                                    ),
+                                  ),
+                                  const TextSpan(text: " and "),
+                                  TextSpan(
+                                    text: "Terms of Use.",
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () async {
+                                        final Uri url = Uri.parse(
+                                            'https://www.pawplaces.app/termsandcondition');
+                                        if (!await launchUrl(url,
+                                            mode:
+                                                LaunchMode.inAppBrowserView)) {
+                                          throw Exception(
+                                              'Could not launch $url');
+                                        }
+                                      },
+                                    style: TextStyle(
+                                      color: ColorPalette.orange,
+                                    ),
+                                  ),
+                                ]),
+                            style: const TextStyle(
                               fontSize: 13,
                               color: Color.fromARGB(255, 255, 255, 255),
                             ),

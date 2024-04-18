@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:pawplaces/common/data/models/user_session.dart';
 import 'package:pawplaces/common/domain/use_cases/use_case.dart';
 
@@ -27,6 +28,9 @@ class VerifyPhoneUseCase
       return session;
     } catch (e) {
       // Handle verification failure
+      FirebaseCrashlytics.instance.log("AuthSignInFailed: ${e.toString()}");
+      FirebaseCrashlytics.instance
+          .recordError(e.toString(), StackTrace.current);
       return null;
     }
   }

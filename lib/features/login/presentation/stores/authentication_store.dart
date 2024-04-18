@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
@@ -42,6 +43,9 @@ abstract class _AuthenticationStore with Store {
   String? error;
 
   @observable
+  String? errorMsg;
+
+  @observable
   String? phoneNumber;
 
   @observable
@@ -72,6 +76,8 @@ abstract class _AuthenticationStore with Store {
     errorReactDispose = reaction(
       (error) => this.error,
       (error) {
+        final showAuthErrorDetails =
+            FirebaseRemoteConfig.instance.getBool("showAuthErrorDetails");
         if (error != null) {
           AwesomeDialog(
             context: context,
@@ -80,6 +86,7 @@ abstract class _AuthenticationStore with Store {
             btnOkColor: const Color(0xFFFB6021),
             dialogType: DialogType.error,
             title: error,
+            desc: showAuthErrorDetails ? errorMsg : null,
             btnOkOnPress: () {},
           ).show();
         }
@@ -146,11 +153,13 @@ abstract class _AuthenticationStore with Store {
       }
       isLoading = false;
       verificationId = sendResponse.verificationId;
+      errorMsg = sendResponse.errorMsg;
       return verificationId;
     } else {
       isSMSSent = false;
       error = "Can't send OTP";
     }
+    errorMsg = sendResponse?.errorMsg;
     isLoading = false;
     return null;
   }

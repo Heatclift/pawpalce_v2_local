@@ -1,9 +1,25 @@
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:pawplaces/common/domain/services/session_service.dart';
 import 'package:pawplaces/features/dashboard/data/models/place_model.dart';
 import 'package:pawplaces/common/data/sources/pawplace_api.dart';
 
 class PlacesRepository {
   final api = PawPlaceApi.create();
+
+  Future<bool> unlockPlace(String placeId) async {
+    final session = await SessionService.getSession();
+    final payload = {
+      "locationId": placeId,
+      "userId": session!.localId!,
+    };
+    final res = await api.unlockPlace(payload);
+    if (res.isSuccessful) {
+      return res.body["status"] == "success";
+    } else {
+      return false;
+    }
+  }
 
   Future<List<PlaceModel>> getPlaces(
       {required double lat, required double long, required double zoom}) async {
@@ -55,7 +71,10 @@ class PlacesRepository {
       ),
     ];
 
-    final res = await api.getNearbyPlaces(lat, long);
+    final distanceInterval =
+        FirebaseRemoteConfig.instance.getDouble("distanceInterval") * 1000;
+
+    final res = await api.getNearbyPlaces(lat, long, zoom, distanceInterval);
 
     if (res.isSuccessful && res.body != null) {
       if (res.body["status"] == "success") {

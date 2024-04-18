@@ -6,10 +6,14 @@ class FacilitiesChip extends StatelessWidget {
     super.key,
     required this.label,
     required this.count,
+    this.onTap,
+    this.isSelected = false,
   });
 
   final String label;
+  final bool isSelected;
   final int count;
+  final void Function()? onTap;
 
   @override
   Widget build(BuildContext context) {

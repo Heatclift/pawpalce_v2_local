@@ -8,14 +8,17 @@ part 'place_model.g.dart';
 @freezed
 class PlaceModel with _$PlaceModel {
   const factory PlaceModel({
-    required String placeId,
+    @JsonKey(name: "locationId") required String placeId,
     @JsonKey(name: "locationName") required String placeName,
     @JsonKey(name: "googlePhotoUrl")
-    @Default("https://loremflickr.com/128/101")
+    @Default("https://placehold.co/600x400?text=No+Image")
     String thumbnail,
+    @Default(false) bool isPetfriendly,
+    @Default(false) bool isFavorite,
+    @Default(false) bool isUnlocked,
     String? placeDescription,
     @Default("pethotel") String category,
-    @JsonKey(name: "googleRating") @Default(0.0) double placeRating,
+    @JsonKey(name: "userRatings") @Default(0.0) double placeRating,
     @JsonKey(name: "googleRatingCount") @Default(0) int placeRatingCount,
     required double latitude,
     required double longitude,

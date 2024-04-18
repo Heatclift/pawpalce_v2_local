@@ -9,6 +9,7 @@ import 'package:pawplaces/common/presentation/stores/session_store.dart';
 import 'package:pawplaces/common/presentation/widgets/confirmation_dialog.dart';
 import 'package:pawplaces/features/onboarding/presentation/screens/onboarding_screen.dart';
 import 'package:pawplaces/main.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = "SettingsScreen";
@@ -67,44 +68,44 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ],
             ),
             const Gap(20),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                "Account",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17,
-                ),
-              ),
-            ),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 20),
+            //   child: Text(
+            //     "Account",
+            //     style: TextStyle(
+            //       fontWeight: FontWeight.w600,
+            //       fontSize: 17,
+            //     ),
+            //   ),
+            // ),
+            // const Gap(15),
+            // const SettingsListItem(
+            //   label: "Personal Info.",
+            // ),
+            // const Gap(15),
+            // const SettingsListItem(
+            //   label: "Referral Friends ",
+            // ),
+            // const Gap(15),
+            // const SettingsListItem(
+            //   label: "VIP Benefit",
+            // ),
+            // const Gap(15),
+            // const Padding(
+            //   padding: EdgeInsets.symmetric(horizontal: 20),
+            //   child: Text(
+            //     "Privacy & Security",
+            //     style: TextStyle(
+            //       fontWeight: FontWeight.w600,
+            //       fontSize: 17,
+            //     ),
+            //   ),
+            // ),
             const Gap(15),
-            const SettingsListItem(
-              label: "Personal Info.",
-            ),
-            const Gap(15),
-            const SettingsListItem(
-              label: "Referral Friends ",
-            ),
-            const Gap(15),
-            const SettingsListItem(
-              label: "VIP Benefit",
-            ),
-            const Gap(15),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20),
-              child: Text(
-                "Privacy & Security",
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 17,
-                ),
-              ),
-            ),
-            const Gap(15),
-            const SettingsListItem(
-              label: "Change password",
-            ),
-            const Gap(15),
+            // const SettingsListItem(
+            //   label: "Change password",
+            // ),
+            // const Gap(15),
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 20),
               child: Text(
@@ -116,20 +117,40 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const Gap(15),
-            const SettingsListItem(
-              label: "Help Center?",
-            ),
-            const Gap(15),
-            const SettingsListItem(
+            // const SettingsListItem(
+            //   label: "Help Center?",
+            // ),
+            // const Gap(15),
+            SettingsListItem(
               label: "Term of Service",
+              ontap: () async {
+                final Uri url =
+                    Uri.parse('https://www.pawplaces.app/termsandcondition');
+                if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+                  throw Exception('Could not launch $url');
+                }
+              },
             ),
             const Gap(15),
-            const SettingsListItem(
+            SettingsListItem(
               label: "Privacy Policy",
+              ontap: () async {
+                final Uri url =
+                    Uri.parse('https://www.pawplaces.app/privacypolicy');
+                if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+                  throw Exception('Could not launch $url');
+                }
+              },
             ),
             const Gap(15),
-            const SettingsListItem(
+            SettingsListItem(
               label: "About Us",
+              ontap: () async {
+                final Uri url = Uri.parse('https://www.pawplaces.app/');
+                if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+                  throw Exception('Could not launch $url');
+                }
+              },
             ),
             const Gap(15),
             const Padding(

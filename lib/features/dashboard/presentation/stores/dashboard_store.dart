@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -19,6 +20,36 @@ abstract class _DashboardStore with Store {
   final _locationService = dpLocator<LocationService>();
 
   @observable
+  String? error;
+
+  ReactionDisposer? errorReactDispose;
+
+  void disposeReactions() {
+    errorReactDispose?.call();
+  }
+
+  void setupReactions(BuildContext context) {
+    disposeReactions();
+    errorReactDispose = reaction(
+      (error) => this.error,
+      (error) {
+        if (error != null) {
+          AwesomeDialog(
+            context: context,
+            animType: AnimType.bottomSlide,
+            headerAnimationLoop: false,
+            btnOkColor: const Color(0xFFFB6021),
+            dialogType: DialogType.error,
+            title: error,
+            btnOkOnPress: () {},
+          ).show();
+        }
+      },
+      fireImmediately: false,
+    );
+  }
+
+  @observable
   Position currentLocation = Position(
       longitude: 0,
       latitude: 0,
@@ -35,10 +66,33 @@ abstract class _DashboardStore with Store {
   bool isLoading = false;
 
   @observable
+  ObservableList<String> filters = ObservableList<String>();
+
+  @observable
+  Position lastScreenPosition = Position(
+      longitude: 0,
+      latitude: 0,
+      timestamp: DateTime.now(),
+      accuracy: 0,
+      altitude: 0,
+      altitudeAccuracy: 0,
+      heading: 0,
+      headingAccuracy: 0,
+      speed: 0,
+      speedAccuracy: 0);
+
+  @observable
   ObservableFuture<dynamic> future = ObservableFuture.value(null);
 
   @observable
   ObservableList<PlaceModel> places = ObservableList.of(<PlaceModel>[]);
+
+  @computed
+  List<PlaceModel> get filteredPlaces {
+    final filtered =
+        places.where((element) => filters.contains(element.category));
+    return filtered.toList();
+  }
 
   @observable
   ObservableSet<Marker> markers = ObservableSet.of(<Marker>{});
@@ -51,15 +105,25 @@ abstract class _DashboardStore with Store {
     currentLocation = currentLocation = position;
   }
 
+  @action
+  void setFilter(String filter) {
+    if (filters.contains(filter)) {
+      filters.remove(filter);
+    } else {
+      filters.add(filter);
+    }
+    loadMarkers(position: lastScreenPosition);
+  }
+
   String placeIcon(String cat) {
-    switch (cat) {
+    switch (cat.toLowerCase()) {
       case "appartment":
         return MapPinAssets.apartment;
 
       case "cafe":
         return MapPinAssets.cafe;
 
-      case "gooming":
+      case "grooming":
         return MapPinAssets.grooming;
 
       case "hotel":
@@ -84,18 +148,41 @@ abstract class _DashboardStore with Store {
         return MapPinAssets.restaurant;
 
       default:
-        return MapPinAssets.restaurant;
+        return MapPinAssets.park;
     }
   }
 
   @action
-  Future<void> loadMarkers() async {
-    isLoading = true;
-    var location = await _locationService.getLocation();
+  Future<bool> unlockPlace(String placeId) async {
+    error = null;
+    final res = await placeRepo.unlockPlace(placeId);
+    if (res) {
+      var place = places.firstWhere((element) => element.placeId == placeId);
+      place = place.copyWith(isUnlocked: true);
+      places.removeWhere((element) => element.placeId == place.placeId);
+      places.add(place);
+    } else {
+      error = "Can't Unlock Place.";
+    }
+    return res;
+  }
+
+  @action
+  Future<void> loadMarkers({
+    Position? position,
+    double zoom = 15,
+  }) async {
+    error = null;
+    if (position == null) {
+      isLoading = true;
+    } else {
+      lastScreenPosition = position;
+    }
+    var location = position ?? await _locationService.getLocation();
     var placesResult = await placeRepo.getPlaces(
       lat: location.latitude,
       long: location.longitude,
-      zoom: 15,
+      zoom: zoom,
     );
     places.clear();
     places.addAll(placesResult);
@@ -108,7 +195,8 @@ abstract class _DashboardStore with Store {
       MapPinAssets.currLoc,
     );
     markers.clear();
-    for (var place in places) {
+    final placesProc = filters.isNotEmpty ? filteredPlaces : places;
+    for (var place in placesProc) {
       var pinIcon = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(
           size: Size(20, 20),

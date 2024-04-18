@@ -89,6 +89,22 @@ mixin _$AuthenticationStore on _AuthenticationStore, Store {
     });
   }
 
+  late final _$errorMsgAtom =
+      Atom(name: '_AuthenticationStore.errorMsg', context: context);
+
+  @override
+  String? get errorMsg {
+    _$errorMsgAtom.reportRead();
+    return super.errorMsg;
+  }
+
+  @override
+  set errorMsg(String? value) {
+    _$errorMsgAtom.reportWrite(value, super.errorMsg, () {
+      super.errorMsg = value;
+    });
+  }
+
   late final _$phoneNumberAtom =
       Atom(name: '_AuthenticationStore.phoneNumber', context: context);
 
@@ -186,6 +202,7 @@ isAuthenticated: ${isAuthenticated},
 isNewAccount: ${isNewAccount},
 isSMSSent: ${isSMSSent},
 error: ${error},
+errorMsg: ${errorMsg},
 phoneNumber: ${phoneNumber},
 verificationId: ${verificationId},
 future: ${future},

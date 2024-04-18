@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:pawplaces/common/domain/constants/color_palette.dart';
+import 'package:pawplaces/common/domain/injectors/dependecy_injector.dart';
 import 'package:pawplaces/features/dashboard/data/models/place_model.dart';
+import 'package:pawplaces/features/dashboard/presentation/stores/dashboard_store.dart';
 import 'package:pawplaces/features/dashboard/presentation/widget/paw_place_card.dart';
 
 class NearbyPlacesPullupSheet extends StatefulWidget {
@@ -19,6 +22,7 @@ class NearbyPlacesPullupSheet extends StatefulWidget {
 
 class _NearbyPlacesPullupSheetState extends State<NearbyPlacesPullupSheet> {
   final GlobalKey _contentKey = GlobalKey();
+  final store = dpLocator<DashboardStore>();
   double _maxChildHeight = .95;
 
   double _getContentHeight() {
@@ -42,7 +46,9 @@ class _NearbyPlacesPullupSheetState extends State<NearbyPlacesPullupSheet> {
     Future.delayed(
       const Duration(seconds: 1),
       () {
-        _maxChildSize(context);
+        if (mounted) {
+          _maxChildSize(context);
+        }
       },
     );
     super.initState();
@@ -85,45 +91,50 @@ class _NearbyPlacesPullupSheetState extends State<NearbyPlacesPullupSheet> {
                 return SingleChildScrollView(
                   controller: scrollController,
                   physics: const ClampingScrollPhysics(),
-                  child: Column(
-                    key: _contentKey,
-                    children: [
-                      Row(
-                        children: [
-                          const Gap(35),
-                          SvgPicture.asset(
-                            "assets/icons/places_icon.svg",
-                            width: 20,
-                            fit: BoxFit.contain,
-                          ),
-                          const Gap(10),
-                          Text(
-                            "${widget.places.length}+ PawPlaces Available",
-                            style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: ColorPalette.accentTextDark,
-                              fontSize: 13,
+                  child: Observer(builder: (context) {
+                    final places = store.filters.isNotEmpty
+                        ? store.filteredPlaces
+                        : store.places;
+                    return Column(
+                      key: _contentKey,
+                      children: [
+                        Row(
+                          children: [
+                            const Gap(35),
+                            SvgPicture.asset(
+                              "assets/icons/places_icon.svg",
+                              width: 20,
+                              fit: BoxFit.contain,
                             ),
-                          ),
-                        ],
-                      ),
-                      const Gap(15),
-                      ...widget.places.map(
-                        (place) => Padding(
-                          padding: const EdgeInsets.only(bottom: 15),
-                          child: PawPlaceCard(
-                            place: place,
-                            currentLoc: widget.currentLoc,
-                            placeLoc: (
-                              lat: place.latitude,
-                              long: place.longitude
+                            const Gap(10),
+                            Text(
+                              "${places.length}+ PawPlaces Available",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                color: ColorPalette.accentTextDark,
+                                fontSize: 13,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Gap(15),
+                        ...places.map(
+                          (place) => Padding(
+                            padding: const EdgeInsets.only(bottom: 15),
+                            child: PawPlaceCard(
+                              place: place,
+                              currentLoc: widget.currentLoc,
+                              placeLoc: (
+                                lat: place.latitude,
+                                long: place.longitude
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      const Gap(120),
-                    ],
-                  ),
+                        const Gap(120),
+                      ],
+                    );
+                  }),
                 );
               },
             ),

@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
@@ -11,7 +12,10 @@ import 'package:pawplaces/common/domain/constants/color_palette.dart';
 class PlaceUnlockedDialog extends StatefulWidget {
   const PlaceUnlockedDialog({
     super.key,
+    this.onCalltoAction,
   });
+
+  final void Function()? onCalltoAction;
 
   @override
   State<PlaceUnlockedDialog> createState() => _PlaceUnlockedDialogState();
@@ -84,6 +88,8 @@ class _PlaceUnlockedDialogState extends State<PlaceUnlockedDialog> {
                       ),
                     ),
                     Positioned.fill(
+                      right: 20,
+                      left: 20,
                       child: SingleChildScrollView(
                         child: AnimationLimiter(
                           child: Column(
@@ -124,6 +130,45 @@ class _PlaceUnlockedDialogState extends State<PlaceUnlockedDialog> {
                                     color: Colors.white,
                                   ),
                                 ),
+                                const Gap(30),
+                                TextButton(
+                                  onPressed: () {
+                                    widget.onCalltoAction?.call();
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: const Color(0xFFFB6021),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(50),
+                                      ),
+                                    ),
+                                    minimumSize: const Size(150, 50),
+                                  ),
+                                  child: const Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        "Rate Place",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                    .animate(
+                                      autoPlay: true,
+                                      onComplete: (controller) {
+                                        controller.loop();
+                                      },
+                                    )
+                                    .shake(
+                                      delay: const Duration(seconds: 5),
+                                      hz: 3,
+                                      offset: const Offset(10, 0),
+                                    ),
                               ],
                             ),
                           ),
